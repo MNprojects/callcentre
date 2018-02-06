@@ -1,9 +1,13 @@
-{% extends "base_generic.html" %}
+{% extends "base.html" %}
 
 {% block content %}
 <h1>Call Centre Stats - Home</h1>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <p><button type="submit">Upload</button></p>
+</form>
 
-  <p><button></button>Lets upload something!</p>
-
+  {{ allRecords }}
 
 {% endblock %}
