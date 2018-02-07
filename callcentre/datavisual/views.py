@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from .models import CallRecord
-from .forms import ImportExcelForm
+from .forms import DocumentForm
+from django.shortcuts import redirect
+from .ExcelParser import ExcelParser
 
 def index(request):
     """
@@ -16,21 +18,19 @@ def index(request):
         context={'allRecords':allRecords},
     )
 
-def test_flowcell(request):
-    c = RequestContext(request, {'other_context':'details here'})
-    if request.method == 'POST': # If the form has been submitted...
-        form = ImportExcelForm(request.POST,  request.FILES) # A form bound to the POST data
-        if form.is_valid(): # All validation rules pass
-            excel_parser= ExcelParser()
-            success, log  = excel_parser.read_excel(request.FILES['file'] )
-            if success:
-                return redirect(reverse('admin:index') + "pages/flowcell_good/") ## redirects to aliquot page ordered by the most recent
-            else:
-                errors = '* Problem with flowcell * <br><br>log details below:<br>' + "<br>".join(log)
-                c['errors'] = mark_safe(errors)
-        else:
-            c['errors'] = form.errors 
+
+
+
+def model_form_upload(request):
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            ExcelParser.read_excel(request.FILES['file'])
+            return redirect('index')
+
     else:
-        form = ImportExcelForm() # An unbound form
-    c['form'] = form
-    return render_to_response('sequencing/file_upload.html')
+        form = DocumentForm()
+    return render(request, 'datavisual/model_form_upload.html', {
+        'form': form
+    })

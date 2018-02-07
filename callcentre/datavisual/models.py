@@ -1,9 +1,13 @@
 from django.db import models
 
-# Create your models here.
+class Document(models.Model):
+    description = models.CharField(max_length=255, blank=True)
+    file = models.FileField(upload_to='documents/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
 class CallRecord(models.Model):
-    title = models.CharField(max_length=20)
-    dateUploaded = models.DateField(auto_now_add=True ,null=False)
+    
+    
     accountNumber = models.IntegerField()
     phoneNumber = models.CharField(max_length=20)
     dialledNumber = models.IntegerField()

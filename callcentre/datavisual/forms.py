@@ -1,5 +1,12 @@
 from django import forms
 from .models import CallRecord
 
-class ImportExcelForm(forms.Form):
-    file  = forms.FileField(label= "Choose excel to upload") 
+from .models import Document
+
+
+
+class DocumentForm(forms.ModelForm):
+    class Meta:
+        model = Document
+        fields = ('description', 'file', )
+    
